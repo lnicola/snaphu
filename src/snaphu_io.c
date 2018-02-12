@@ -17,12 +17,12 @@
 #include <float.h>
 #include <string.h>
 #include <ctype.h>
+#include <time.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <sys/time.h>
 #include <sys/resource.h>
 
 #include "snaphu.h"
@@ -39,7 +39,7 @@ void SetDefaults(infileT *infiles, outfileT *outfiles, paramT *params){
   StrNCopy(infiles->corrfile,DEF_CORRFILE,MAXSTRLEN);
   StrNCopy(infiles->ampfile,DEF_AMPFILE,MAXSTRLEN);
   StrNCopy(infiles->ampfile2,DEF_AMPFILE2,MAXSTRLEN);
-  StrNCopy(infiles->estfile,DEF_ESTFILE,MAXSTRLEN);  
+  StrNCopy(infiles->estfile,DEF_ESTFILE,MAXSTRLEN);
   StrNCopy(infiles->magfile,DEF_MAGFILE,MAXSTRLEN);
   StrNCopy(infiles->costinfile,DEF_COSTINFILE,MAXSTRLEN);
 
@@ -56,7 +56,7 @@ void SetDefaults(infileT *infiles, outfileT *outfiles, paramT *params){
   StrNCopy(outfiles->rawcorrdumpfile,DEF_RAWCORRDUMPFILE,MAXSTRLEN);
   StrNCopy(outfiles->costoutfile,DEF_COSTOUTFILE,MAXSTRLEN);
   StrNCopy(outfiles->conncompfile,DEF_CONNCOMPFILE,MAXSTRLEN);
-  StrNCopy(outfiles->outfile,DEF_OUTFILE,MAXSTRLEN);  
+  StrNCopy(outfiles->outfile,DEF_OUTFILE,MAXSTRLEN);
   StrNCopy(outfiles->logfile,DEF_LOGFILE,MAXSTRLEN);
 
   /* file formats */
@@ -82,22 +82,22 @@ void SetDefaults(infileT *infiles, outfileT *outfiles, paramT *params){
   params->orbitradius=DEF_ORBITRADIUS;
   params->altitude=DEF_ALTITUDE;
   params->earthradius=DEF_EARTHRADIUS;
-  params->bperp=DEF_BPERP; 
+  params->bperp=DEF_BPERP;
   params->transmitmode=DEF_TRANSMITMODE;
   params->baseline=DEF_BASELINE;
   params->baselineangle=DEF_BASELINEANGLE;
   params->nlooksrange=DEF_NLOOKSRANGE;
   params->nlooksaz=DEF_NLOOKSAZ;
   params->nlooksother=DEF_NLOOKSOTHER;
-  params->ncorrlooks=DEF_NCORRLOOKS;           
+  params->ncorrlooks=DEF_NCORRLOOKS;
   params->ncorrlooksrange=DEF_NCORRLOOKSRANGE;
   params->ncorrlooksaz=DEF_NCORRLOOKSAZ;
-  params->nearrange=DEF_NEARRANGE;         
-  params->dr=DEF_DR;               
-  params->da=DEF_DA;               
-  params->rangeres=DEF_RANGERES;         
-  params->azres=DEF_AZRES;            
-  params->lambda=DEF_LAMBDA;           
+  params->nearrange=DEF_NEARRANGE;
+  params->dr=DEF_DR;
+  params->da=DEF_DA;
+  params->rangeres=DEF_RANGERES;
+  params->azres=DEF_AZRES;
+  params->lambda=DEF_LAMBDA;
 
   /* scattering model parameters */
   params->kds=DEF_KDS;
@@ -130,7 +130,7 @@ void SetDefaults(infileT *infiles, outfileT *outfiles, paramT *params){
   params->layfalloffconst=DEF_LAYFALLOFFCONST;
   params->sigsqshortmin=DEF_SIGSQSHORTMIN;
   params->sigsqlayfactor=DEF_SIGSQLAYFACTOR;
-  
+
   /* deformation mode parameters */
   params->defoazdzfactor=DEF_DEFOAZDZFACTOR;
   params->defothreshfactor=DEF_DEFOTHRESHFACTOR;
@@ -144,15 +144,15 @@ void SetDefaults(infileT *infiles, outfileT *outfiles, paramT *params){
   params->arcmaxflowconst=DEF_ARCMAXFLOWCONST;
   params->maxflow=DEF_MAXFLOW;
   params->krowei=DEF_KROWEI;
-  params->kcolei=DEF_KCOLEI;   
+  params->kcolei=DEF_KCOLEI;
   params->kperpdpsi=DEF_KPERPDPSI;
   params->kpardpsi=DEF_KPARDPSI;
-  params->threshold=DEF_THRESHOLD;  
-  params->initdzr=DEF_INITDZR;    
-  params->initdzstep=DEF_INITDZSTEP;    
+  params->threshold=DEF_THRESHOLD;
+  params->initdzr=DEF_INITDZR;
+  params->initdzstep=DEF_INITDZSTEP;
   params->maxcost=DEF_MAXCOST;
-  params->costscale=DEF_COSTSCALE;      
-  params->costscaleambight=DEF_COSTSCALEAMBIGHT;      
+  params->costscale=DEF_COSTSCALE;
+  params->costscaleambight=DEF_COSTSCALEAMBIGHT;
   params->dnomincangle=DEF_DNOMINCANGLE;
   params->srcrow=DEF_SRCROW;
   params->srccol=DEF_SRCCOL;
@@ -210,9 +210,9 @@ void ProcessArgs(int argc, char *argv[], infileT *infiles, outfileT *outfiles,
     fprintf(sp1,OPTIONSHELPBRIEF);
     exit(ABNORMAL_EXIT);
   }
-  for(i=1;i<argc;i++){                  
+  for(i=1;i<argc;i++){
     /* if argument is an option */
-    if(argv[i][0]=='-'){   
+    if(argv[i][0]=='-'){
       if(strlen(argv[i])==1){
 	fprintf(sp0,"invalid command line argument -\n");
 	exit(ABNORMAL_EXIT);
@@ -235,7 +235,7 @@ void ProcessArgs(int argc, char *argv[], infileT *infiles, outfileT *outfiles,
 	    params->unwrapped=TRUE;
 	  }else if(argv[i][j]=='f'){
 	    if(++i<argc && j==strlen(argv[i-1])-1){
-	      
+
 	      /* read user-supplied configuration file */
 	      ReadConfigFile(argv[i],infiles,outfiles,linelenptr,params);
 	      break;
@@ -435,10 +435,10 @@ void ProcessArgs(int argc, char *argv[], infileT *infiles, outfileT *outfiles,
 	  }
 	}else if(!strcmp(argv[i],"--copyright") || !strcmp(argv[i],"--info")){
 	  fprintf(sp1,COPYRIGHT);
-	  exit(ABNORMAL_EXIT);	  
+	  exit(ABNORMAL_EXIT);
 	}else if(!strcmp(argv[i],"--help")){
 	  fprintf(sp1,OPTIONSHELPFULL);
-	  exit(ABNORMAL_EXIT);	  
+	  exit(ABNORMAL_EXIT);
 	}else{
 	  fprintf(sp0,"unrecognized option %s\n",argv[i]);
 	  exit(ABNORMAL_EXIT);
@@ -449,7 +449,7 @@ void ProcessArgs(int argc, char *argv[], infileT *infiles, outfileT *outfiles,
 	  exit(ABNORMAL_EXIT);
 	}
       }
-    }else{                                
+    }else{
       /* argument is not an option */
       if(!strlen(infiles->infile)){
         StrNCopy(infiles->infile,argv[i],MAXSTRLEN);
@@ -457,7 +457,7 @@ void ProcessArgs(int argc, char *argv[], infileT *infiles, outfileT *outfiles,
 	if(StringToLong(argv[i],linelenptr) || *linelenptr<=0){
 	  fprintf(sp0,"line length must be positive integer\n");
 	  exit(ABNORMAL_EXIT);
-	}	  
+	}
       }else{
         fprintf(sp0,"multiple input files: %s and %s\n",
 		infiles->infile,argv[i]);
@@ -481,7 +481,7 @@ void ProcessArgs(int argc, char *argv[], infileT *infiles, outfileT *outfiles,
  * Checks all parameters to make sure they are valid.  This is just a boring
  * function with lots of checks in it.
  */
-void CheckParams(infileT *infiles, outfileT *outfiles, 
+void CheckParams(infileT *infiles, outfileT *outfiles,
 		 long linelen, long nlines, paramT *params){
 
   long ni, nj, n;
@@ -499,7 +499,7 @@ void CheckParams(infileT *infiles, outfileT *outfiles,
       fclose(fp);
       remove(outfiles->outfile);
     }
-    if(!strcmp(outfiles->outfile,infiles->infile) 
+    if(!strcmp(outfiles->outfile,infiles->infile)
        && !params->eval && !params->regrowconncomps){
       fprintf(sp0,"WARNING: output will overwrite input\n");
     }
@@ -567,7 +567,7 @@ void CheckParams(infileT *infiles, outfileT *outfiles,
   }
   /* dr and da after multilooking can be larger than rangeres, azres */
   /*
-  if(params->rangeres<=(params->dr) 
+  if(params->rangeres<=(params->dr)
      || params->azres<=(params->da)){
     fprintf(sp0,"resolutions parameters must be larger than pixel spacings\n");
     exit(ABNORMAL_EXIT);
@@ -617,7 +617,7 @@ void CheckParams(infileT *infiles, outfileT *outfiles,
     fprintf(sp0,"parameters rhosconst1 and rhosconst2 must be positive\n");
     exit(ABNORMAL_EXIT);
   }
-  if(!strlen(infiles->corrfile) 
+  if(!strlen(infiles->corrfile)
      && (params->defaultcorr<0 || params->defaultcorr>1)){
     fprintf(sp0,"default correlation must be between 0 and 1\n");
     exit(ABNORMAL_EXIT);
@@ -633,18 +633,18 @@ void CheckParams(infileT *infiles, outfileT *outfiles,
     exit(ABNORMAL_EXIT);
   }
   if(!strlen(infiles->corrfile)){
-    if(params->ncorrlooksaz<params->nlooksaz){ 
+    if(params->ncorrlooksaz<params->nlooksaz){
       fprintf(sp0,"NCORRLOOKSAZ cannot be smaller than NLOOKSAZ\n");
       fprintf(sp0,"  setting NCORRLOOKSAZ to equal NLOOKSAZ\n");
       params->ncorrlooksaz=params->nlooksaz;
     }
-    if(params->ncorrlooksrange<params->nlooksrange){ 
+    if(params->ncorrlooksrange<params->nlooksrange){
       fprintf(sp0,"NCORRLOOKSRANGE cannot be smaller than NLOOKSRANGE\n");
       fprintf(sp0,"  setting NCORRLOOKSRANGE to equal NLOOKSRANGE\n");
       params->ncorrlooksrange=params->nlooksrange;
     }
   }
-    
+
   /* check pdf model parameters */
   if(params->azdzfactor<0){
     fprintf(sp0,"parameter azdzfactor must be nonnegative\n");
@@ -700,7 +700,7 @@ void CheckParams(infileT *infiles, outfileT *outfiles,
     fprintf(sp0,"parameter defolayconst must be positive\n");
     exit(ABNORMAL_EXIT);
   }
-  
+
   /* check algorithm parameters */
   /* be sure to check for things that will cause type overflow */
   /* or floating point exception */
@@ -777,7 +777,7 @@ void CheckParams(infileT *infiles, outfileT *outfiles,
 				   *nlines/(double )params->ntilerow
 				   *linelen/(double )params->ntilecol);
   }
-  if(params->initmaxflow==AUTOCALCSTATMAX 
+  if(params->initmaxflow==AUTOCALCSTATMAX
      && !(params->ntilerow==1 && params->ntilecol==1)){
     fprintf(sp0,"initial maximum flow cannot be calculated automatically in "
 	    "tile mode\n");
@@ -787,8 +787,8 @@ void CheckParams(infileT *infiles, outfileT *outfiles,
   if(params->initmethod==MCFINIT && !params->unwrapped){
     fprintf(sp0,"program not compiled with cs2 MCF solver module\n");
     exit(ABNORMAL_EXIT);
-  }    
-#endif  
+  }
+#endif
 
   /* tile parameters */
   if(params->ntilerow<1 || params->ntilecol<1){
@@ -808,14 +808,14 @@ void CheckParams(infileT *infiles, outfileT *outfiles,
       fprintf(sp0,"tile mode not enabled for Lp costs\n");
       exit(ABNORMAL_EXIT);
     }
-    if(params->ntilerow+params->rowovrlp > nlines 
+    if(params->ntilerow+params->rowovrlp > nlines
        || params->ntilecol+params->colovrlp > linelen
        || params->ntilerow*params->ntilerow > nlines
        || params->ntilecol*params->ntilecol > linelen){
       fprintf(sp0,"tiles too small or overlap too large for given input\n");
       exit(ABNORMAL_EXIT);
     }
-    if(params->minregionsize 
+    if(params->minregionsize
        > ((nlines-(params->ntilerow-1)*(ni-params->rowovrlp))
 	  *(linelen-(params->ntilecol-1)*(nj-params->colovrlp)))){
       fprintf(sp0,"minimum region size too large for given tile parameters\n");
@@ -856,7 +856,7 @@ void CheckParams(infileT *infiles, outfileT *outfiles,
 	StrNCopy(params->tiledir,"",MAXSTRLEN);
       }
     }
-    if(params->piecefirstrow!=DEF_PIECEFIRSTROW 
+    if(params->piecefirstrow!=DEF_PIECEFIRSTROW
        || params->piecefirstcol!=DEF_PIECEFIRSTCOL
        || params->piecenrow!=DEF_PIECENROW
        || params->piecencol!=DEF_PIECENCOL){
@@ -882,7 +882,7 @@ void CheckParams(infileT *infiles, outfileT *outfiles,
     if(!params->piecencol){
       params->piecencol=linelen;
     }
-    if(params->piecefirstrow<0 || params->piecefirstcol<0 
+    if(params->piecefirstrow<0 || params->piecefirstcol<0
        || params->piecenrow<1 || params->piecencol<1
        || params->piecefirstrow+params->piecenrow>nlines
        || params->piecefirstcol+params->piecencol>linelen){
@@ -904,7 +904,7 @@ void CheckParams(infileT *infiles, outfileT *outfiles,
     if(!strlen(outfiles->conncompfile)){
       fprintf(sp0,"no connected component output file specified\n");
       exit(ABNORMAL_EXIT);
-    }      
+    }
     params->unwrapped=TRUE;
   }
   if(params->minconncompfrac<0 || params->minconncompfrac>1){
@@ -964,7 +964,7 @@ void CheckParams(infileT *infiles, outfileT *outfiles,
  */
 void ReadConfigFile(char *conffile, infileT *infiles, outfileT *outfiles,
 		    long *linelenptr, paramT *params){
-  
+
   long nlines, nparams, nfields;
   FILE *fp;
   char buf[MAXLINELEN];
@@ -981,7 +981,7 @@ void ReadConfigFile(char *conffile, infileT *infiles, outfileT *outfiles,
       exit(ABNORMAL_EXIT);
     }
   }else{
-    
+
     /* if we were given a zero-length name, just ignore it and go on */
     return;
   }
@@ -1008,7 +1008,7 @@ void ReadConfigFile(char *conffile, infileT *infiles, outfileT *outfiles,
 	      nlines,conffile);
       exit(ABNORMAL_EXIT);
     }
-      
+
     /* read the first two fields */
     /* (str1, str2 same size as buf, so can't overflow them */
     nfields=sscanf(buf,"%s %s",str1,str2);
@@ -1048,14 +1048,14 @@ void ReadConfigFile(char *conffile, infileT *infiles, outfileT *outfiles,
 	if(strlen(infiles->ampfile2) && params->amplitude){
 	  fprintf(sp0,"cannot specify both amplitude and power\n");
 	  exit(ABNORMAL_EXIT);
-	}	
+	}
 	StrNCopy(infiles->ampfile,str2,MAXSTRLEN);
 	params->amplitude=FALSE;
       }else if(!strcmp(str1,"PWRFILE2")){
 	if(strlen(infiles->ampfile) && params->amplitude){
 	  fprintf(sp0,"cannot specify both amplitude and power\n");
 	  exit(ABNORMAL_EXIT);
-	}	
+	}
 	StrNCopy(infiles->ampfile2,str2,MAXSTRLEN);
 	params->amplitude=FALSE;
 	infiles->ampfileformat=FLOAT_DATA;
@@ -1090,7 +1090,7 @@ void ReadConfigFile(char *conffile, infileT *infiles, outfileT *outfiles,
       }else if(!strcmp(str1,"INITMETHOD")){
 	if(!strcmp(str2,"MST") || !strcmp(str2,"mst")){
 	  params->initmethod=MSTINIT;
-	}else if(!strcmp(str2,"MCF") || !strcmp(str2,"mcf") 
+	}else if(!strcmp(str2,"MCF") || !strcmp(str2,"mcf")
 		 || !strcmp(str2,"CS2") || !strcmp(str2,"cs2")){
 	  params->initmethod=MCFINIT;
 	}else{
@@ -1277,7 +1277,7 @@ void ReadConfigFile(char *conffile, infileT *infiles, outfileT *outfiles,
       }else if(!strcmp(str1,"TILEEDGEWEIGHT")){
 	badparam=StringToDouble(str2,&(params->tileedgeweight));
       }else if(!strcmp(str1,"SCNDRYARCFLOWMAX")){
-	badparam=StringToLong(str2,&(params->scndryarcflowmax));	
+	badparam=StringToLong(str2,&(params->scndryarcflowmax));
       }else if(!strcmp(str1,"ASSEMBLEONLY")){
 	if(!strcmp(str2,"FALSE")){
 	  params->assembleonly=FALSE;
@@ -1448,9 +1448,9 @@ void ReadConfigFile(char *conffile, infileT *infiles, outfileT *outfiles,
  * ------------------------------
  * Writes a text log file of configuration parameters and other
  * information.  The log file is in a format compatible to be used as
- * a configuration file.  
+ * a configuration file.
  */
-void WriteConfigLogFile(int argc, char *argv[], infileT *infiles, 
+void WriteConfigLogFile(int argc, char *argv[], infileT *infiles,
 			outfileT *outfiles, long linelen, paramT *params){
 
   FILE *fp;
@@ -1467,7 +1467,7 @@ void WriteConfigLogFile(int argc, char *argv[], infileT *infiles,
       exit(ABNORMAL_EXIT);
     }
     fprintf(sp1,"Logging run-time parameters to file %s\n",outfiles->logfile);
-    
+
     /* print some run-time environment information */
     fprintf(fp,"# %s v%s\n",PROGRAMNAME,VERSION);
     time(t);
@@ -1571,7 +1571,7 @@ void WriteConfigLogFile(int argc, char *argv[], infileT *infiles,
     fprintf(fp,"NCORRLOOKS  %.8f\n",params->ncorrlooks);
     fprintf(fp,"NCORRLOOKSRANGE  %ld\n",params->ncorrlooksrange);
     fprintf(fp,"NCORRLOOKSAZ  %ld\n",params->ncorrlooksaz);
-      
+
     /* scattering model parameters */
     fprintf(fp,"\n# Scattering model parameters\n");
     fprintf(fp,"KDS  %.8f\n",params->kds);
@@ -1583,7 +1583,7 @@ void WriteConfigLogFile(int argc, char *argv[], infileT *infiles,
     fprintf(fp,"LAYMINEI  %.8f\n",params->layminei);
     fprintf(fp,"SLOPERATIOFACTOR  %.8f\n",params->sloperatiofactor);
     fprintf(fp,"SIGSQEI  %.8f\n",params->sigsqei);
-    
+
     /* decorrelation model paramters */
     fprintf(fp,"\n# Decorrelation model parameters\n");
     fprintf(fp,"DRHO  %.8f\n",params->drho);
@@ -1594,7 +1594,7 @@ void WriteConfigLogFile(int argc, char *argv[], infileT *infiles,
     fprintf(fp,"CSTD3  %.8f\n",params->cstd3);
     fprintf(fp,"DEFAULTCORR  %.8f\n",params->defaultcorr);
     fprintf(fp,"RHOMINFACTOR  %.8f\n",params->rhominfactor);
-      
+
     /* PDF model paramters */
     fprintf(fp,"\n# PDF model parameters\n");
     fprintf(fp,"DZLAYPEAK  %.8f\n",params->dzlaypeak);
@@ -1640,7 +1640,7 @@ void WriteConfigLogFile(int argc, char *argv[], infileT *infiles,
     }
     fprintf(fp,"SOURCEMODE  %ld\n",params->sourcemode);
     fprintf(fp,"CS2SCALEFACTOR  %ld\n",params->cs2scalefactor);
-      
+
     /* file names for dumping intermediate arrays */
     fprintf(fp,"\n# File names for dumping intermediate arrays\n");
     LogStringParam(fp,"INITFILE",outfiles->initfile);
@@ -1705,7 +1705,7 @@ void WriteConfigLogFile(int argc, char *argv[], infileT *infiles,
 
 /* function: LogStringParam()
  * --------------------------
- * Writes a line to the log file stream for the given keyword/value 
+ * Writes a line to the log file stream for the given keyword/value
  * pair.
  */
 void LogStringParam(FILE *fp, char *key, char *value){
@@ -1740,7 +1740,7 @@ void LogBoolParam(FILE *fp, char *key, signed char boolvalue){
  * file format pair.
  */
 void LogFileFormat(FILE *fp, char *key, signed char fileformat){
-  
+
   if(fileformat==COMPLEX_DATA){
     fprintf(fp,"%s  COMPLEX_DATA\n",key);
   }else if(fileformat==FLOAT_DATA){
@@ -1753,9 +1753,9 @@ void LogFileFormat(FILE *fp, char *key, signed char fileformat){
 }
 
 
-/* function: GetNLines() 
+/* function: GetNLines()
  * ---------------------
- * Gets the number of lines of data in the input file based on the file 
+ * Gets the number of lines of data in the input file based on the file
  * size.
  */
 long GetNLines(infileT *infiles, long linelen){
@@ -1812,9 +1812,9 @@ void WriteOutputFile(float **mag, float **unwrappedphase, char *outfile,
 
 /* function: OpenOutputFile()
  * --------------------------
- * Opens a file for writing.  If unable to open the file, tries to 
+ * Opens a file for writing.  If unable to open the file, tries to
  * open a file in a dump path.  The name of the opened output file
- * is written into the string realoutfile, for which at least 
+ * is written into the string realoutfile, for which at least
  * MAXSTRLEN bytes should already be allocated.
  */
 FILE *OpenOutputFile(char *outfile, char *realoutfile){
@@ -1850,10 +1850,10 @@ FILE *OpenOutputFile(char *outfile, char *realoutfile){
  * ----------------------------
  * Writes magnitude and phase data from separate arrays to file.
  * Data type is float.  For each line of data, a full line of magnitude data
- * is written, then a full line of phase data.  Dumps the file to a 
+ * is written, then a full line of phase data.  Dumps the file to a
  * default directory if the file name/path passed in cannot be used.
  */
-void WriteAltLineFile(float **mag, float **phase, char *outfile, 
+void WriteAltLineFile(float **mag, float **phase, char *outfile,
 		      long nrow, long ncol){
 
   int row;
@@ -1877,10 +1877,10 @@ void WriteAltLineFile(float **mag, float **phase, char *outfile,
  * ----------------------------
  * Writes data from separate arrays to file, alternating samples.
  * Data type is float.  nrow and ncol are the sizes of each input
- * array.  Dumps the file to a default directory if the file name/path 
+ * array.  Dumps the file to a default directory if the file name/path
  * passed in cannot be used.
  */
-void WriteAltSampFile(float **arr1, float **arr2, char *outfile, 
+void WriteAltSampFile(float **arr1, float **arr2, char *outfile,
 		      long nrow, long ncol){
 
   long row, col;
@@ -1906,12 +1906,12 @@ void WriteAltSampFile(float **arr1, float **arr2, char *outfile,
 
 
 /* function: Write2DArray()
- * ------------------------ 
+ * ------------------------
  * Write data in a two dimensional array to a file.  Data elements are
- * have the number of bytes specified by size (use sizeof() when 
- * calling this function.  
+ * have the number of bytes specified by size (use sizeof() when
+ * calling this function.
  */
-void Write2DArray(void **array, char *filename, long nrow, long ncol, 
+void Write2DArray(void **array, char *filename, long nrow, long ncol,
 		  size_t size){
 
   int row;
@@ -1931,13 +1931,13 @@ void Write2DArray(void **array, char *filename, long nrow, long ncol,
 
 
 /* function: Write2DRowColArray()
- * ------------------------------ 
- * Write data in a 2-D row-and-column array to a file.  Data elements 
- * have the number of bytes specified by size (use sizeof() when 
+ * ------------------------------
+ * Write data in a 2-D row-and-column array to a file.  Data elements
+ * have the number of bytes specified by size (use sizeof() when
  * calling this function.  The format of the array is nrow-1 rows
  * of ncol elements, followed by nrow rows of ncol-1 elements each.
  */
-void Write2DRowColArray(void **array, char *filename, long nrow, 
+void Write2DRowColArray(void **array, char *filename, long nrow,
 			long ncol, size_t size){
 
   int row;
@@ -1968,7 +1968,7 @@ void Write2DRowColArray(void **array, char *filename, long nrow,
  * Reads the input file specified on the command line.
  */
 void ReadInputFile(infileT *infiles, float ***magptr, float ***wrappedphaseptr,
- 		   short ***flowsptr, long linelen, long nlines, 
+ 		   short ***flowsptr, long linelen, long nlines,
 		   paramT *params, tileparamT *tileparams){
 
   long row, col, nrow, ncol;
@@ -2016,7 +2016,7 @@ void ReadInputFile(infileT *infiles, float ***magptr, float ***wrappedphaseptr,
     }
 
     /* check to make sure the input data doesn't contain NaNs or infs */
-    if(!ValidDataArray(wrappedphase,nrow,ncol) 
+    if(!ValidDataArray(wrappedphase,nrow,ncol)
        || (mag!=NULL && !ValidDataArray(mag,nrow,ncol))){
       fprintf(sp0,"NaN or infinity found in input float data\nAbort\n");
       exit(ABNORMAL_EXIT);
@@ -2043,16 +2043,16 @@ void ReadInputFile(infileT *infiles, float ***magptr, float ***wrappedphaseptr,
 		  tileparams,sizeof(float *),sizeof(float));
     }else{
       fprintf(sp0,"Illegal input file format specification\nAbort\n");
-      exit(ABNORMAL_EXIT);      
+      exit(ABNORMAL_EXIT);
     }
 
     /* check to make sure the input data doesn't contain NaNs or infs */
-    if(!ValidDataArray(unwrappedphase,nrow,ncol) 
+    if(!ValidDataArray(unwrappedphase,nrow,ncol)
        || (mag!=NULL && !ValidDataArray(mag,nrow,ncol))){
       fprintf(sp0,"NaN or infinity found in input float data\nAbort\n");
       exit(ABNORMAL_EXIT);
     }
-    
+
     /* flip the sign of the input unwrapped phase if flip flag is set */
     FlipPhaseArraySign(unwrappedphase,params,nrow,ncol);
 
@@ -2062,7 +2062,7 @@ void ReadInputFile(infileT *infiles, float ***magptr, float ***wrappedphaseptr,
     /* free unwrapped phase array to save memory */
     Free2DArray((void **)unwrappedphase,nrow);
 
-  }    
+  }
 
   /* get memory for mag (power) image and set to unity if not passed */
   if(mag==NULL){
@@ -2088,7 +2088,7 @@ void ReadInputFile(infileT *infiles, float ***magptr, float ***wrappedphaseptr,
  * Memory for the magnitude array should already have been allocated by
  * ReadInputFile().
  */
-void ReadMagnitude(float **mag, infileT *infiles, long linelen, long nlines, 
+void ReadMagnitude(float **mag, infileT *infiles, long linelen, long nlines,
 		   tileparamT *tileparams){
 
   float **dummy;
@@ -2121,8 +2121,8 @@ void ReadMagnitude(float **mag, infileT *infiles, long linelen, long nlines,
  * -------------------------------------
  * Reads the unwrapped-phase estimate from a file (assumes file name exists).
  */
-void ReadUnwrappedEstimateFile(float ***unwrappedestptr, infileT *infiles, 
-			       long linelen, long nlines, 
+void ReadUnwrappedEstimateFile(float ***unwrappedestptr, infileT *infiles,
+			       long linelen, long nlines,
 			       paramT *params, tileparamT *tileparams){
 
   float **dummy;
@@ -2153,7 +2153,7 @@ void ReadUnwrappedEstimateFile(float ***unwrappedestptr, infileT *infiles,
   if(dummy!=NULL){
     Free2DArray((void **)dummy,nrow);
   }
-  
+
   /* make sure data is valid */
   if(!ValidDataArray(*unwrappedestptr,nrow,ncol)){
     fprintf(sp0,"Infinity or NaN found in file %s\nAbort\n",infiles->estfile);
@@ -2170,7 +2170,7 @@ void ReadUnwrappedEstimateFile(float ***unwrappedestptr, infileT *infiles,
  * ---------------------------
  * Read in weights form rowcol format file of short ints.
  */
-void ReadWeightsFile(short ***weightsptr,char *weightfile, 
+void ReadWeightsFile(short ***weightsptr,char *weightfile,
 		     long linelen, long nlines, tileparamT *tileparams){
 
   long row, col, nrow, ncol;
@@ -2223,12 +2223,12 @@ void ReadWeightsFile(short ***weightsptr,char *weightfile,
  * -------------------------
  * Reads the intensity information from specified file(s).  If possilbe,
  * sets arrays for average power and individual powers of single-pass
- * SAR images.  
+ * SAR images.
  */
-void ReadIntensity(float ***pwrptr, float ***pwr1ptr, float ***pwr2ptr, 
-		   infileT *infiles, long linelen, long nlines, 
+void ReadIntensity(float ***pwrptr, float ***pwr1ptr, float ***pwr2ptr,
+		   infileT *infiles, long linelen, long nlines,
 		   paramT *params, tileparamT *tileparams){
-  
+
   float **pwr, **pwr1, **pwr2;
   long row, col, nrow, ncol;
 
@@ -2280,7 +2280,7 @@ void ReadIntensity(float ***pwrptr, float ***pwr1ptr, float ***pwr2ptr,
   }
 
   /* check data validity */
-  if((pwr1!=NULL && !ValidDataArray(pwr1,nrow,ncol)) 
+  if((pwr1!=NULL && !ValidDataArray(pwr1,nrow,ncol))
      || (pwr2!=NULL && !ValidDataArray(pwr2,nrow,ncol))
      || (pwr!=NULL && !ValidDataArray(pwr,nrow,ncol))){
     fprintf(sp0,"Infinity or NaN found in amplitude or power data\nAbort\n");
@@ -2312,7 +2312,7 @@ void ReadIntensity(float ***pwrptr, float ***pwr1ptr, float ***pwr2ptr,
       }
     }
   }
-  
+
   /* set output pointers */
   *pwrptr=pwr;
   *pwr1ptr=pwr1;
@@ -2325,9 +2325,9 @@ void ReadIntensity(float ***pwrptr, float ***pwr1ptr, float ***pwr2ptr,
  * ---------------------------
  * Reads the correlation information from specified file.
  */
-void ReadCorrelation(float ***corrptr, infileT *infiles, 
+void ReadCorrelation(float ***corrptr, infileT *infiles,
 		     long linelen, long nlines, tileparamT *tileparams){
-  
+
   float **corr, **dummy;
   long nrow;
 
@@ -2365,11 +2365,11 @@ void ReadCorrelation(float ***corrptr, infileT *infiles,
  * ---------------------------
  * Read in the data from a file containing magnitude and phase
  * data.  File should have one line of magnitude data, one line
- * of phase data, another line of magnitude data, etc.  
- * ncol refers to the number of complex elements in one line of 
- * data.  
+ * of phase data, another line of magnitude data, etc.
+ * ncol refers to the number of complex elements in one line of
+ * data.
  */
-void ReadAltLineFile(float ***mag, float ***phase, char *alfile, 
+void ReadAltLineFile(float ***mag, float ***phase, char *alfile,
 		     long linelen, long nlines, tileparamT *tileparams){
 
   FILE *fp;
@@ -2381,15 +2381,15 @@ void ReadAltLineFile(float ***mag, float ***phase, char *alfile,
     exit(ABNORMAL_EXIT);
   }
 
-  /* get number of lines based on file size and line length */ 
-  fseek(fp,0,SEEK_END);            
+  /* get number of lines based on file size and line length */
+  fseek(fp,0,SEEK_END);
   filesize=ftell(fp);
   if(filesize!=(2*nlines*linelen*sizeof(float))){
     fprintf(sp0,"File %s wrong size (%ldx%ld array expected)\nAbort\n",
 	    alfile,nlines,linelen);
     exit(ABNORMAL_EXIT);
   }
-  fseek(fp,0,SEEK_SET);                 
+  fseek(fp,0,SEEK_SET);
 
   /* get memory */
   nrow=tileparams->nrow;
@@ -2400,7 +2400,7 @@ void ReadAltLineFile(float ***mag, float ***phase, char *alfile,
   if(*phase==NULL){
     (*phase)=(float **)Get2DMem(nrow,ncol,sizeof(float *),sizeof(float));
   }
-  
+
   /* read the data */
   fseek(fp,(tileparams->firstrow*2*linelen+tileparams->firstcol)
 	*sizeof(float),SEEK_CUR);
@@ -2426,11 +2426,11 @@ void ReadAltLineFile(float ***mag, float ***phase, char *alfile,
  * --------------------------------
  * Read only the phase data from a file containing magnitude and phase
  * data.  File should have one line of magnitude data, one line
- * of phase data, another line of magnitude data, etc.  
- * ncol refers to the number of complex elements in one line of 
- * data. 
+ * of phase data, another line of magnitude data, etc.
+ * ncol refers to the number of complex elements in one line of
+ * data.
  */
-void ReadAltLineFilePhase(float ***phase, char *alfile, 
+void ReadAltLineFilePhase(float ***phase, char *alfile,
 			  long linelen, long nlines, tileparamT *tileparams){
 
   FILE *fp;
@@ -2442,15 +2442,15 @@ void ReadAltLineFilePhase(float ***phase, char *alfile,
     exit(ABNORMAL_EXIT);
   }
 
-  /* get number of lines based on file size and line length */ 
-  fseek(fp,0,SEEK_END);            
+  /* get number of lines based on file size and line length */
+  fseek(fp,0,SEEK_END);
   filesize=ftell(fp);
   if(filesize!=(2*nlines*linelen*sizeof(float))){
     fprintf(sp0,"File %s wrong size (%ldx%ld array expected)\nAbort\n",
 	    alfile,nlines,linelen);
     exit(ABNORMAL_EXIT);
   }
-  fseek(fp,0,SEEK_SET);                 
+  fseek(fp,0,SEEK_SET);
 
   /* get memory */
   nrow=tileparams->nrow;
@@ -2458,7 +2458,7 @@ void ReadAltLineFilePhase(float ***phase, char *alfile,
   if(*phase==NULL){
     (*phase)=(float **)Get2DMem(nrow,ncol,sizeof(float *),sizeof(float));
   }
-  
+
   /* read the phase data */
   fseek(fp,(tileparams->firstrow*2*linelen+linelen
 	    +tileparams->firstcol)*sizeof(float),SEEK_CUR);
@@ -2479,12 +2479,12 @@ void ReadAltLineFilePhase(float ***phase, char *alfile,
  * ---------------------------
  * Reads file of complex floats of the form real,imag,real,imag...
  * ncol is the number of complex samples (half the number of real
- * floats per line).  Ensures that phase values are in the range 
+ * floats per line).  Ensures that phase values are in the range
  * [0,2pi).
  */
-void ReadComplexFile(float ***mag, float ***phase, char *rifile, 
+void ReadComplexFile(float ***mag, float ***phase, char *rifile,
 		     long linelen, long nlines, tileparamT *tileparams){
-         
+
   FILE *fp;
   long filesize,ncol,nrow,row,col,padlen;
   float *inpline;
@@ -2495,7 +2495,7 @@ void ReadComplexFile(float ***mag, float ***phase, char *rifile,
     exit(ABNORMAL_EXIT);
   }
 
-  /* get number of lines based on file size and line length */ 
+  /* get number of lines based on file size and line length */
   fseek(fp,0,SEEK_END);
   filesize=ftell(fp);
   if(filesize!=(2*nlines*linelen*sizeof(float))){
@@ -2503,7 +2503,7 @@ void ReadComplexFile(float ***mag, float ***phase, char *rifile,
 	    rifile,nlines,linelen);
     exit(ABNORMAL_EXIT);
   }
-  fseek(fp,0,SEEK_SET);                 
+  fseek(fp,0,SEEK_SET);
 
   /* get memory */
   nrow=tileparams->nrow;
@@ -2546,12 +2546,12 @@ void ReadComplexFile(float ***mag, float ***phase, char *rifile,
 
 /* function: Read2DArray()
  * -------------------------
- * Reads file of real data of size elsize.  Assumes the native byte order 
- * of the platform. 
+ * Reads file of real data of size elsize.  Assumes the native byte order
+ * of the platform.
  */
-void Read2DArray(void ***arr, char *infile, long linelen, long nlines, 
+void Read2DArray(void ***arr, char *infile, long linelen, long nlines,
 		 tileparamT *tileparams, size_t elptrsize, size_t elsize){
-         
+
   FILE *fp;
   long filesize,row,nrow,ncol,padlen;
 
@@ -2561,7 +2561,7 @@ void Read2DArray(void ***arr, char *infile, long linelen, long nlines,
     exit(ABNORMAL_EXIT);
   }
 
-  /* get number of lines based on file size and line length */ 
+  /* get number of lines based on file size and line length */
   fseek(fp,0,SEEK_END);
   filesize=ftell(fp);
   if(filesize!=(nlines*linelen*elsize)){
@@ -2569,7 +2569,7 @@ void Read2DArray(void ***arr, char *infile, long linelen, long nlines,
 	    infile,nlines,linelen);
     exit(ABNORMAL_EXIT);
   }
-  fseek(fp,0,SEEK_SET);                 
+  fseek(fp,0,SEEK_SET);
 
   /* get memory */
   nrow=tileparams->nrow;
@@ -2601,9 +2601,9 @@ void Read2DArray(void ***arr, char *infile, long linelen, long nlines,
  * ncol is the number of samples in each image (note the number of
  * floats per line in the specified file).
  */
-void ReadAltSampFile(float ***arr1, float ***arr2, char *infile, 
+void ReadAltSampFile(float ***arr1, float ***arr2, char *infile,
 		     long linelen, long nlines, tileparamT *tileparams){
-         
+
   FILE *fp;
   long filesize,row,col,nrow,ncol,padlen;
   float *inpline;
@@ -2614,7 +2614,7 @@ void ReadAltSampFile(float ***arr1, float ***arr2, char *infile,
     exit(ABNORMAL_EXIT);
   }
 
-  /* get number of lines based on file size and line length */ 
+  /* get number of lines based on file size and line length */
   fseek(fp,0,SEEK_END);
   filesize=ftell(fp);
   if(filesize!=(2*nlines*linelen*sizeof(float))){
@@ -2622,7 +2622,7 @@ void ReadAltSampFile(float ***arr1, float ***arr2, char *infile,
 	    infile,nlines,linelen);
     exit(ABNORMAL_EXIT);
   }
-  fseek(fp,0,SEEK_SET);                 
+  fseek(fp,0,SEEK_SET);
 
   /* get memory */
   nrow=tileparams->nrow;
@@ -2658,24 +2658,24 @@ void ReadAltSampFile(float ***arr1, float ***arr2, char *infile,
 
 /* function: Read2DRowColFile()
  * ----------------------------
- * Gets memory and reads single array from a file.  Array should be in the 
+ * Gets memory and reads single array from a file.  Array should be in the
  * file line by line starting with the row array (size nrow-1 x ncol) and
- * followed by the column array (size nrow x ncol-1).  Both arrays 
+ * followed by the column array (size nrow x ncol-1).  Both arrays
  * are placed into the passed array as they were in the file.
  */
-void Read2DRowColFile(void ***arr, char *filename, long linelen, long nlines, 
+void Read2DRowColFile(void ***arr, char *filename, long linelen, long nlines,
 		      tileparamT *tileparams, size_t size){
 
   FILE *fp;
   long row, nel, nrow, ncol, padlen, filelen;
- 
+
   /* open the file */
   if((fp=fopen(filename,"r"))==NULL){
     fprintf(sp0,"Can't open file %s\nAbort\n",filename);
     exit(ABNORMAL_EXIT);
   }
 
-  /* get number of data elements in file */ 
+  /* get number of data elements in file */
   fseek(fp,0,SEEK_END);
   filelen=ftell(fp);
   fseek(fp,0,SEEK_SET);
@@ -2723,23 +2723,23 @@ void Read2DRowColFile(void ***arr, char *filename, long linelen, long nlines,
  * --------------------------------
  * Similar to Read2DRowColFile(), except reads only row (horizontal) data
  * at specified locations.  tileparams->nrow is treated as the number of
- * rows of data to be read from the RowCol file, not the number of 
+ * rows of data to be read from the RowCol file, not the number of
  * equivalent rows in the orginal pixel file (whose arcs are represented
  * in the RowCol file).
  */
-void Read2DRowColFileRows(void ***arr, char *filename, long linelen, 
+void Read2DRowColFileRows(void ***arr, char *filename, long linelen,
 			  long nlines, tileparamT *tileparams, size_t size){
 
   FILE *fp;
   long row, nel, nrow, ncol, padlen, filelen;
- 
+
   /* open the file */
   if((fp=fopen(filename,"r"))==NULL){
     fprintf(sp0,"Can't open file %s\nAbort\n",filename);
     exit(ABNORMAL_EXIT);
   }
 
-  /* get number of data elements in file */ 
+  /* get number of data elements in file */
   fseek(fp,0,SEEK_END);
   filelen=ftell(fp);
   fseek(fp,0,SEEK_SET);
@@ -2873,10 +2873,10 @@ void SetVerboseOut(paramT *params){
 
 /* function: ChildResetStreamPointers()
  * -----------------------------------
- * Reset the global stream pointers for a child.  Streams equal to stdout 
+ * Reset the global stream pointers for a child.  Streams equal to stdout
  * are directed to a log file, and errors are written to the screen.
  */
-void ChildResetStreamPointers(pid_t pid, long tilerow, long tilecol, 
+void ChildResetStreamPointers(pid_t pid, long tilerow, long tilecol,
 			      paramT *params){
 
   FILE *logfp;
@@ -2916,7 +2916,7 @@ void ChildResetStreamPointers(pid_t pid, long tilerow, long tilecol,
  * -----------------------------
  * Dumps incremental cost arrays, creating file names for them.
  */
-void DumpIncrCostFiles(incrcostT **incrcosts, long iincrcostfile, 
+void DumpIncrCostFiles(incrcostT **incrcosts, long iincrcostfile,
 		       long nflow, long nrow, long ncol){
 
   long row, col, maxcol;
@@ -2968,7 +2968,7 @@ void DumpIncrCostFiles(incrcostT **incrcosts, long iincrcostfile,
 
 /* function: MakeTileDir()
  * ---------------------------
- * Create a temporary directory for tile files in directory of output file.  
+ * Create a temporary directory for tile files in directory of output file.
  * Save directory name in buffer in paramT structure.
  */
 void MakeTileDir(paramT *params, outfileT *outfiles){
@@ -2993,7 +2993,7 @@ void MakeTileDir(paramT *params, outfileT *outfiles){
  * -------------------------
  * Given a filename, separates it into path and base filename.  Output
  * buffers should be at least MAXSTRLEN characters, and filename buffer
- * should be no more than MAXSTRLEN characters.  The output path 
+ * should be no more than MAXSTRLEN characters.  The output path
  * has a trailing "/" character.
  */
 void ParseFilename(char *filename, char *path, char *basename){
